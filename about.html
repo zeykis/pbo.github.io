@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>PBO DevLogs</title>
+    <!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-5.css">
+
+</head> 
+
+<body>
+    <header class="header text-center">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Project:BreakOut</a></h1>
+        
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/profile.png" alt="image" >			
+					
+					<div class="bio mb-3">Lorem Ipsum beech<br><a href="about.html">Find out more about the game</a></div><!--//bio-->
+					<ul class="social-list list-inline py-3 mx-auto">
+			            <li class="list-inline-item"><a href="https://github.com/SouffranceSolidaire/breakout"><i class="fab fa-github-alt fa-fw"></i></a></li>
+			        </ul><!--//social-list-->
+			        <hr> 
+				</div><!--//profile-section-->
+				
+				<ul class="navbar-nav flex-column text-start">
+					<li class="nav-item">
+					    <a class="nav-link active" href="index.html"><i class="fas fa-home fa-fw me-2"></i>Blog Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="about.html"><i class="fas fa-user fa-fw me-2"></i>About Us</a>
+					</li>
+				</ul>
+				
+				<div class="my-2 my-md-3">
+				    <a class="btn btn-primary" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">Download Now</a>
+				</div>
+			</div>
+		</nav>
+    </header> 
+    
+    <div class="main-wrapper">
+		<article class="about-section py-5">
+			<div class="container">
+				<h2 class="title mb-3">About Us</h2>
+				<p>We Are the Souffrance Solidaire, four friends who came together in order to make our project for our second semester at Epita and create a project we can be proud to present.
+					</p>
+					<h3 class="mt-3">The team :</h3>
+				<div class="images">
+					<div class="row">
+						<div class="col-md-5">
+							<img src="assets/images/Marjo.jpg" alt="Marjolain Dumont"style="width: 100%; max-width: 200px;">
+							<p>Dumont Marjolain</p>
+						</div>
+						<div class="col-md-5">
+							<img src="assets/images/Cyril.jpg" alt="Drexler Cyril"style="width: 100%; max-width: 200px;">
+							<p>Drexler Cyril</p>
+						</div>
+						<div class="col-md-5">
+							<img src="assets/images/Tibo.jpg" alt="Gomes Thibault"style="width: 100%; max-width: 200px;">
+							<p>Gomes Thibault</p>
+						</div>
+						<div class="col-md-5">
+							<img src="assets/images/Romu.jpg" alt="Tartari- -Wang Romuald"style="width: 100%; max-width: 200px;">
+							<p>Tartari- -Wang Romuald</p>
+						</div>
+					</div>
+				</div>
+				<h3 class="title mb-3">About Our Project :</h3>
+				<p>Our Project is entitled  <i>Project: Breakout!</i> Inspired by games such as <i>Hades, Binding of Isaac and Enter the Gungeon</i>, we decided to make our own roguelike game. Due to some of our members’ love of open source software and previous experience, we elected to build our project using <a href="https://godotengine.org/">Godot 4</a>, an actively developing open source game engine.</p>
+				<h4 class="title mb-3">Developpement history :</h4>
+				<p>Development for our project took place in three main segments which each ended in a project defense.
+					<p>The first stage of development, which took place mainly during the first three months of 2023, was dedicated to the fleshing out of our main ideas, creating the backbone of our game. As such, this stage of developpement saw the birth of our visual style, adopting our vibrant visual style taken from the asset pack we used, the fleshing out of what our player would be able to do, the theming of our weapons , a simple enemy, basic online functionality and, most importantly, the skeletons of our procedural map generation system, essential in to making each run of our game feel different. The main challenge during this period was the use of the Godot 4 engine which was foreign to most of our team at the time and still in beta. In fact, the first release candidate of Godot 4 came out about a week before our first project defense! As such, some time was dedicated by the team to learning the engine. This stage of development ended with the completion of a barebones build which gave us an outline of what our game could achieve.
+					</p>
+				</p>
+				<p>The second stage of development took place between March and April 2023. This stage of game development was dedicated mainly to fleshing out and improving our preexisting systems in order to improve the variety and replayability of our game. This involved adding more weapons, reworking and adding enemies, improving the way players connect with one another, adding sound into the game and improving our map generation algorithm. The previous algorithm only had the ability to place rooms vertically. The main difficulty of this stage of development was to not only have the map generate rooms horizontally but also to have the connecting corridors spawn in a visually consistent way. To solve this problem, we ended up using three nodes at each room's exit which would connect between one another in order to create a complete corridor. This stage of development ended in the creation of a build which showed a clear image of what our final build would look like as the game was complete in numerous aspects.</p>
+				<p>The final stage of development, which took place between April and May 2023, involved finalizing the game and finalizing the player experience. This stage of the game involved adding different menus, polishing player connections, adding the ability to end a game via beating a level or player death, adding a tutorial and overall tweaking the visuals of the game in order to be more pleasing. This part of developpement marks the end of our S2 project and the completions of Project: Breakout!
+				</p>
+				<h4 class="title mb-3">Tools used :</h4>
+				<p>Our project was made using the following tools :<br>
+					<a href="https://godotengine.org/article/godot-4-0-sets-sail/ "><i>Godot 4.0</i></a> as our game engine of choice for its open source nature and its ease of use.<br>
+					<a href="https://limezu.itch.io/moderninteriors"><i>Modern Interiors</i></a> by LimeZu for visuals, bar some customs assets and animations.<br>
+					<a href="https://pixabay.com/"><i>Pixabay</i></a> for royalty free sound effects.<br>
+					<a href="https://www.youtube.com/watch?v=pDGaqUskBRM"><i>La Danse Macabre</i></a> from Jake Kaufman for our main theme, this music was sourced from the Shovel Knight OST<br>
+				</p>
+				<h5 class="title mb-3">More Details</h5>
+				<p>
+					For a closer look at our entire project here is our final report : <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></a><br>
+					If you’d like to try our project : <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></a>
+					And here’s a lighter version : <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></a><br>
+
+				</p>
+			</div>
+	
+		</article><!--//about-section-->
+		<section class="cta-section theme-bg-light py-5">
+			<div class="container text-center">
+			</div><!--//container-->
+		</section>
+		<footer class="footer text-center py-2 theme-bg-dark">
+		</footer>
+	</div><!--//main-wrapper-->
+    
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script> 
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+</body>
+</html> 
+
