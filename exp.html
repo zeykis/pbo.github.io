@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>PBO DevLogs</title>
+    <!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+	<link rel="stylesheet" href="assets/js/monokai-sublime.min.css">
+	<script src="assets/js/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-5.css">
+</head> 
+
+<body>
+    <header class="header text-center">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Project:BreakOut</a></h1>
+        
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/profile.png" alt="image" >			
+					<ul class="social-list list-inline py-3 mx-auto">
+			            <li class="list-inline-item"><a href="https://github.com/SouffranceSolidaire/breakout"><i class="fab fa-github-alt fa-fw"></i></a></li>
+			        </ul><!--//social-list-->
+			        <hr> 
+				</div><!--//profile-section-->
+				
+				<ul class="navbar-nav flex-column text-start">
+					<li class="nav-item">
+					    <a class="nav-link active" href="index.html"><i class="fas fa-home fa-fw me-2"></i>Blog Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="about.html"><i class="fas fa-user fa-fw me-2"></i>About Us</a>
+					</li>
+				</ul>
+				
+				<div class="my-2 my-md-3">
+				    <a class="btn btn-primary" href="https://pixeldrain.com/u/1kJFvuE5" target="_blank">Download Now</a>
+				</div>
+			</div>
+		</nav>
+    </header> 
+    <div class="main-wrapper">
+	    <article class="blog-post px-3 py-5 p-md-5">
+		    <div class="container single-col-max-width">
+			    <header class="blog-post-header">
+				    <h2 class="title mb-2">Player experience system</h2>
+				    <div class="meta mb-3"><span class="date">Published 1 month ago</span></div>
+			    </header>
+			    <div class="blog-post-body">
+					Adding a some sort of leveling system was a given to us as it would allow for more customability and replayability. 
+					We decided to go with a simple system that would allow for the player to level up and gain tokens to spend on stats. 
+					The player can spend his tokens to increase his health, damage, speed and stamina to his liking.
+					Implementing this system was fairly easy and went a lot smoother than anticipated. <br><br>
+					<img class="img-fluid" src="assets/images/blog/Upgrade.png" alt="Upgrade Scene">
+					The upgrade menu is a canvas layer composed of 4 buttons with 4 labels attached to them.
+					Each button, when clicked, emits a signal that is then received by our main upgrade menu script.
+					<br><br>
+					<img class="img-fluid" src="assets/images/blog/Button signal.png" alt="Button signals">
+					<br><br>
+					When the signal is received the script calls a function from our player class that will increase the matching player stat after checking if he possesses enough tokens.
+						<pre>
+							<code class="language-csharp">
+	public void _on_up_health_pressed()
+	{
+		_player.UpgradeHealth();
+		UpdateLabel();
+	}
+
+	public void _on_up_damage_pressed()
+	{
+		_player.UpgradeDamage();
+		UpdateLabel();
+	}
+
+	public void _on_up_stamina_pressed()
+	{
+		_player.UpgradeStamina(); 
+		UpdateLabel();
+	}
+
+	public void _on_up_speed_pressed()
+	{
+		_player.UpgradeSpeed(); 
+		UpdateLabel();
+	}
+</code></pre>
+					Here are the player functions that are called.
+					<pre>
+						<code class="language-csharp">
+	public void UpgradeHealth()
+	{
+		if (LvlUpTokenAmount > 0)
+		{
+			HealthLvl ++;
+			MaxHealth += 1;
+			Health ++;
+			LvlUpTokenAmount --;
+			_ui.UpdateTokens(LvlUpTokenAmount);
+			_ui.SetMaxHealth(MaxHealth);
+			_ui.SetHealth(Health);
+		}
+	}
+	public void UpgradeDamage()
+	{
+		if (LvlUpTokenAmount > 0)
+		{
+			DamageLvl++;
+			Damage += 0.2;
+			LvlUpTokenAmount--;
+			_ui.UpdateTokens(LvlUpTokenAmount);
+		}
+	}
+	public void UpgradeSpeed()
+	{
+		if (LvlUpTokenAmount > 0)
+		{
+			SpeedLvl++; 
+			MaxSpeed += 15;
+			LvlUpTokenAmount--;
+			_ui.UpdateTokens(LvlUpTokenAmount);
+			GD.Print($"{Speed} + {SpeedLvl}");
+		}
+	}
+	public void UpgradeStamina()
+	{
+		if (LvlUpTokenAmount > 0)
+		{
+			StaminaLvl ++;
+			MaxStamina += 4;
+			LvlUpTokenAmount --;
+			_ui.UpdateTokens(LvlUpTokenAmount);
+			_ui.SetMaxStamina(MaxStamina);
+			_ui.StaminaUpdate(MaxStamina, Stamina);
+		}
+	}
+	</code></pre>
+	And here is the function that updates the labels.
+	<pre>
+		<code class="language-csharp">
+			public void UpdateLabel()
+	{
+		GetNode<Label>("Control/Health").Text = "Health : " + _player.HealthLvl;
+		GetNode<Label>("Control/Damage").Text = "Damage : " + _player.DamageLvl;
+		GetNode<Label>("Control/Speed").Text = "Speed : " + _player.SpeedLvl;
+		GetNode<Label>("Control/Stamina").Text = "Stamina : " + _player.StaminaLvl;
+	}
+	</code></pre>
+<br><br>
+For the sake of simplicity we decided not to add any sort of cap to the player stats.
+Instead what's going to be limiting player progression is the exp required to level up. Across many RPG growth is determined by an exponential curve so that's exactly what we did.
+The growth rate we decided to land on was :   (player_level^1.8) + (player_level+1)*4 As you can see the growth rate becomes quite steep and will require a lot of grinding to reach the higher levels.<br>
+All in all the system is quite simple and easy to understand. It's also quite fun to play around with and see your character grow stronger and stronger.
+<br><br>
+
+
+
+</div>
+				<nav class="blog-nav nav nav-justified my-5">
+				  <a class="nav-link-prev nav-item nav-link rounded-left" href="#">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+				  <a class="nav-link-next nav-item nav-link rounded-right" href="heal.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+				</nav>
+						
+		    </div><!--//container-->
+	    </article>
+    </div><!--//main-wrapper-->
+
+
+</body>
+</html> 
+

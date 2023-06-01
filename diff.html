@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>PBO DevLogs</title>
+    <!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+	<link rel="stylesheet" href="assets/js/monokai-sublime.min.css">
+	<script src="assets/js/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-5.css">
+</head> 
+
+<body>
+    <header class="header text-center">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Project:BreakOut</a></h1>
+        
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/profile.png" alt="image" >			
+					<ul class="social-list list-inline py-3 mx-auto">
+			            <li class="list-inline-item"><a href="https://github.com/SouffranceSolidaire/breakout"><i class="fab fa-github-alt fa-fw"></i></a></li>
+			        </ul><!--//social-list-->
+			        <hr> 
+				</div><!--//profile-section-->
+				
+				<ul class="navbar-nav flex-column text-start">
+					<li class="nav-item">
+					    <a class="nav-link active" href="index.html"><i class="fas fa-home fa-fw me-2"></i>Blog Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="about.html"><i class="fas fa-user fa-fw me-2"></i>About Us</a>
+					</li>
+				</ul>
+				
+				<div class="my-2 my-md-3">
+				    <a class="btn btn-primary" href="https://pixeldrain.com/u/1kJFvuE5" target="_blank">Download Now</a>
+				</div>
+			</div>
+		</nav>
+    </header> 
+    <div class="main-wrapper">
+	    <article class="blog-post px-3 py-5 p-md-5">
+		    <div class="container single-col-max-width">
+			    <header class="blog-post-header">
+				    <h2 class="title mb-2">Difficulty system</h2>
+				    <div class="meta mb-3"><span class="date">Published 1 month ago</span></div>
+			    </header>
+			    <div class="blog-post-body">
+					We added a new difficulty system to the game! Each floor will have a difficulty level that will increase as you progress through the game. 
+					The level will start from 1 all the way to 3. The higher the level the more enemies will spawn
+					<pre><code class="language-cs">
+						public void SpawnEnemies()
+	{
+		if (!IsMultiplayerAuthority())
+			return;
+
+		if (IsBossRoom)
+		{
+			Node2D enemy = Enemies[0].Instantiate<Node2D>();
+			Callable signal = new Callable(this, "_on_enemy_killed");
+			enemy.Connect("killed", signal);
+			Marker2D enemyPosition = (Marker2D)_enemyPositions.GetChild(GD.RandRange(0, _enemyPositions.GetChildCount() - 1));
+			enemy.GlobalPosition = enemyPosition.GlobalPosition;
+			enemyPosition.Position = Vector2.Zero;
+			_entitySpawnLocation.CallDeferred("add_child", enemy,true);
+		}
+		else
+		{
+			List<Marker2D> allEnemyPositions = new List<Marker2D>();
+			foreach (var marker in _enemyPositions.GetChildren())
+			{
+				allEnemyPositions.Add((Marker2D)marker);
+			}
+			for (int i = 0; i < _numEnemies / (4 - Difficulty); i++)
+			{
+				BaseEnemy enemy = Enemies[GD.RandRange(0, Enemies.Length - 1)].Instantiate<BaseEnemy>();
+				Callable signal = new Callable(this, "_on_enemy_killed");
+				enemy.Connect("killed", signal);
+
+				int index = (int)(GD.Randi() % allEnemyPositions.Count);
+				var enemyPosition = allEnemyPositions[index].GlobalPosition;
+				allEnemyPositions.RemoveAt(index);
+				
+				//Marker2D enemyPosition = (Marker2D)_enemyPositions.GetChild(GD.RandRange(0, _enemyPositions.GetChildCount() - 1));
+				enemy.GlobalPosition = enemyPosition;
+				//enemyPosition.Position = Vector2.Zero;
+				_entitySpawnLocation.CallDeferred("add_child", enemy, true);
+			}
+		}
+
+		_numEnemies /= 4 - Difficulty;
+		CloseDoors();
+	}
+</code>
+	</pre>
+	The code above spawns as many enemies necessary on random markers.
+	<br><br>
+	The way we attribute we give to everyroom of a floor when generating is quite straightforward. In the roomsmain script that handles floor generation we instantiate each room
+	according toa global difficulty scaling variable. The first rooms will always be of level 1 then there is a 30% chance for the next rooms to be of level 2 and a 30% chance for the next rooms to be of level 3.
+	<pre><code class="language-cs">
+	public void DiffToRoom()
+	{
+		
+		Node rooms = GetNode<Node>("/root/Master/Game/Network/Rooms");
+		if (DiffScaling <= 1)
+		{
+			for(int i = 0; i<rooms.GetChildCount(); i++)
+			{
+				
+				if (rooms.GetChild(i).GetType() == typeof(Room))
+				{
+					var room = (Room)rooms.GetChild(i);
+					room.Difficulty = 1;
+				}
+			}
+		}
+		else if (DiffScaling <= 3)
+		{
+			for(int i = 0; i<rooms.GetChildCount(); i++)
+			{
+				
+				if (rooms.GetChild(i).GetType() == typeof(Room))
+				{
+					var room = (Room)rooms.GetChild(i);
+					room.Difficulty = 2;
+				}
+			}
+		}
+		else if (DiffScaling <= 5)
+		{
+			for(int i = 0; i<rooms.GetChildCount(); i++)
+			{
+				if (rooms.GetChild(i).GetType() == typeof(Room))
+				{
+					var room = (Room)rooms.GetChild(i);
+					room.Difficulty = 3;
+				}
+			}
+		}
+		
+		if (GD.Randf() > 0.7f)
+		{
+			DiffScaling++;
+		}
+
+		GD.Print("DiffScaling: " + DiffScaling.ToString());
+	}
+	</code></pre>
+	This adds another layer of difficulty and randomness to the game allowing for more replayability.
+	<br><br>
+</div>
+				<nav class="blog-nav nav nav-justified my-5">
+				  <a class="nav-link-prev nav-item nav-link rounded-left" href="heal.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+				  <a class="nav-link-next nav-item nav-link rounded-right" href="#">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+				</nav>
+						
+		    </div><!--//container-->
+	    </article>
+    </div><!--//main-wrapper-->
+
+
+</body>
+</html> 
+

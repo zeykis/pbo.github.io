@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>PBO DevLogs</title>
+    <!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+	<link rel="stylesheet" href="assets/js/monokai-sublime.min.css">
+	<script src="assets/js/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-5.css">
+</head> 
+
+<body>
+    <header class="header text-center">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Project:BreakOut</a></h1>
+        
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/profile.png" alt="image" >			
+					<ul class="social-list list-inline py-3 mx-auto">
+			            <li class="list-inline-item"><a href="https://github.com/SouffranceSolidaire/breakout"><i class="fab fa-github-alt fa-fw"></i></a></li>
+			        </ul><!--//social-list-->
+			        <hr> 
+				</div><!--//profile-section-->
+				
+				<ul class="navbar-nav flex-column text-start">
+					<li class="nav-item">
+					    <a class="nav-link active" href="index.html"><i class="fas fa-home fa-fw me-2"></i>Blog Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="about.html"><i class="fas fa-user fa-fw me-2"></i>About Us</a>
+					</li>
+				</ul>
+				
+				<div class="my-2 my-md-3">
+				    <a class="btn btn-primary" href="https://pixeldrain.com/u/1kJFvuE5" target="_blank">Download Now</a>
+				</div>
+			</div>
+		</nav>
+    </header> 
+    <div class="main-wrapper">
+	    <article class="blog-post px-3 py-5 p-md-5">
+		    <div class="container single-col-max-width">
+			    <header class="blog-post-header">
+				    <h2 class="title mb-2">New healing item</h2>
+				    <div class="meta mb-3"><span class="date">Published 1 month ago</span></div>
+			    </header>
+			    <div class="blog-post-body">
+					While thinking about new items we came up with the idea of healing items. 
+					The creation of such items was fun and not without its fair share of weird interactions.<br><br>
+					<img class="img-fluid" src="assets/images/blog/Potion.png" alt="Upgrade Scene">
+					The potion is in essence the same kind of item as the other ones, it is just a bit more complex. 
+					As usual the potion (when on the floor) has a player area detector that will call a allow the player to pickup the item when on the ground
+					What differs from other items however is that the potion must be deleted once consumed and the player must be healed.
+					This was a bit tricky to implement at first as we couldn't reuse our drop item function and delete the item we had to create a new function that would do just that.
+					First we make it so the weapon attack is a heal attack and then we call the function that will delete the item and heal the player.
+					<br><br>
+					<pre><code class="language-cs">
+	public override void WeaponAttack(Player player,double damage)
+	{
+		player.Health = player.MaxHealth;
+		player.UpdateHealth();
+		Used = true;
+		player.DestroyItemInInventory();
+	}<br><br>
+	Once that is done the function DestroyItemInInventory() is called and it will "drop" the item in the inventory and set the Used variable to true.
+	<br><br>
+	Then in the drop function we check if the item is a potion and if it is we check if it has been used and if it has we delete it.
+	<pre><code class ="language-cs">
+	public void Drop()
+	{
+		if (this.GetType() == typeof(Potion))
+		{
+			Potion potion = (Potion)this;
+			if (potion.Used)
+			{
+				QueueFree();
+			}
+		}
+		_playerDetector = GetNode<Area2D>("PlayerDetector");
+		_sprite = GetNode<Sprite2D>("FloorSprite");
+		_playerDetector.SetCollisionMaskValue(1, true);
+		_playerDetector.SetCollisionMaskValue(2, true);
+		_playerDetector.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+		_sprite.Visible = true;
+		OnFloor = true;
+	}
+	</code></pre>
+	Once it is done the player swaps back to the previous item in its inventory allowing for a smooth transition.
+</div>
+				<nav class="blog-nav nav nav-justified my-5">
+				  <a class="nav-link-prev nav-item nav-link rounded-left" href="exp.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+				  <a class="nav-link-next nav-item nav-link rounded-right" href="diff.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+				</nav>
+						
+		    </div><!--//container-->
+	    </article>
+    </div><!--//main-wrapper-->
+
+
+</body>
+</html> 
+
